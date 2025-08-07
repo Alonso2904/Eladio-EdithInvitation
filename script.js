@@ -1,7 +1,20 @@
-// Funcionalidad para la invitación de boda
+// Funcionalidad para la invitación de boda con EmailJS configurado
+
+// Configuración de EmailJS con tus credenciales
+const EMAILJS_CONFIG = {
+    serviceID: 'service_aj86xib',
+    templateID: 'template_ku1p4br',
+    publicKey: '7PouY7v1GnE4F29Dm',
+    toEmail: 'cajimenezalonso92@gmail.com'
+};
 
 // Configuración de seguridad
 const REGISTROS_PASSWORD = 'Boda2025!EladioEdith';
+
+// Cargar EmailJS SDK
+(function() {
+    emailjs.init(EMAILJS_CONFIG.publicKey);
+})();
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
@@ -43,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const personas = this.querySelector('input[type="number"]').value;
             const mensaje = this.querySelector('textarea').value;
             
-            // Enviar email con la información
+            // Enviar email con EmailJS
             enviarEmailConfirmacion({
                 nombre: nombre,
                 telefono: telefono,
@@ -54,29 +67,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para enviar email
+    // Función para enviar email con EmailJS
     function enviarEmailConfirmacion(data) {
+        const fecha = new Date().toLocaleDateString('es-ES');
+        const hora = new Date().toLocaleTimeString('es-ES');
+        
         const emailData = {
-            to_email: 'cajimenezalonso92@gmail.com',
+            to_email: EMAILJS_CONFIG.toEmail,
             from_name: data.nombre,
             telefono: data.telefono,
             asistencia: data.asistencia,
             personas: data.personas,
-            mensaje: data.mensaje,
-            fecha: new Date().toLocaleDateString('es-ES'),
-            hora: new Date().toLocaleTimeString('es-ES')
+            mensaje: data.mensaje || 'Sin mensaje',
+            fecha: fecha,
+            hora: hora
         };
 
-        console.log('=== EMAIL ENVIADO ===');
-        console.log('Asunto: Confirmación de asistencia de ' + data.nombre);
-        console.log('Para: cajimenezalonso92@gmail.com');
-        console.log('Contenido:', emailData);
-
-        // Guardar en localStorage
-        guardarRegistroLocal(data);
-
-        // Mostrar mensaje de confirmación
-        showConfirmationMessage(data.nombre);
+        // Enviar email usando EmailJS
+        emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, emailData)
+            .then(function(response) {
+                console.log('✅ Email enviado exitosamente:', response);
+                // Guardar registro localmente
+                guardarRegistroLocal(data);
+                // Mostrar mensaje de confirmación
+                showConfirmationMessage(data.nombre);
+            }, function(error) {
+                console.error('❌ Error al enviar email:', error);
+                alert('Hubo un error al enviar la confirmación. Por favor, intenta de nuevo.');
+            });
     }
 
     // Función para guardar registro localmente
@@ -84,16 +102,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const fecha = new Date().toLocaleDateString('es-ES');
         const hora = new Date().toLocaleTimeString('es-ES');
         
-        const registro = `${fecha}\t${hora}\t${data.nombre}\t${data.telefono}\t${data.asistencia}\t${data.personas}\t${data.mensaje}`;
-        
+        const registro = {
+            fecha: fecha,
+            hora: hora,
+            nombre: data.nombre,
+            telefono: data.telefono,
+            asistencia: data.asistencia,
+            personas: data.personas,
+            mensaje: data.mensaje
+        };
+
         // Guardar en localStorage
-        let registros = localStorage.getItem('registros_boda') || '';
-        if (registros) {
-            registros += '\n' + registro;
-        } else {
-            registros = 'FECHA\t\tHORA\t\tNOMBRE\t\tTELEFONO\t\tASISTENCIA\tPERSONAS\tMENSAJE\n' + registro;
+        let registros = [];
+        try {
+            const stored = localStorage.getItem('registros_boda');
+            if (stored) {
+                registros = JSON.parse(stored);
+                if (!Array.isArray(registros)) {
+                    registros = [];
+                }
+            }
+        } catch (e) {
+            console.warn('Error al parsear registros existentes, creando nuevo array');
+            registros = [];
         }
-        localStorage.setItem('registros_boda', registros);
+        
+        registros.push(registro);
+        localStorage.setItem('registros_boda', JSON.stringify(registros));
     }
 
     // Función para mostrar mensaje de confirmación
@@ -139,10 +174,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para mostrar todos los registros
     function mostrarRegistros() {
-        const registros = localStorage.getItem('registros_boda') || 'No hay registros aún.';
+        let registros = [];
+        try {
+            const stored = localStorage.getItem('registros_boda');
+            if (stored) {
+                registros = JSON.parse(stored);
+                if (!Array.isArray(registros)) {
+                    registros = [];
+                }
+            }
+        } catch (e) {
+            console.warn('Error al cargar registros, creando nuevo array');
+            registros = [];
+        }
         
+        if (registros.length === 0) {
+            alert('No hay registros aún.');
+            return;
+        }
+
         // Crear ventana emergente con los registros
-        const ventana = window.open('', '_blank', 'width=800,height=600');
+        const ventana = window.open('', '_blank', 'width=900,height=700');
         ventana.document.write(`
             <html>
             <head>
@@ -172,58 +224,144 @@ document.addEventListener('DOMContentLoaded', function() {
                         padding: 20px;
                         border-radius: 10px;
                         border: 1px solid #ddd;
-                        overflow-x: auto;
-                    }
-                    pre { 
-                        font-family: 'Courier New', monospace;
-                        font-size: 14px;
-                        line-height: 1.6;
-                        margin: 0;
-                        white-space: pre-wrap;
-                        word-wrap: break-word;
-                    }
-                    .info-box {
-                        background: #e8f5e8;
-                        border: 1px solid #4caf50;
-                        border-radius: 5px;
-                        padding: 15px;
                         margin-bottom: 20px;
-                        text-align: center;
                     }
-                    .cerrar-btn {
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    th, td {
+                        padding: 12px;
+                        text-align: left;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    th {
+                        background-color: #8B4513;
+                        color: white;
+                        font-weight: bold;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f2f2f2;
+                    }
+                    .action-buttons {
+                        text-align: center;
+                        margin-top: 20px;
+                    }
+                    .btn {
                         background: #8B4513;
                         color: white;
-                        padding: 12px 30px;
+                        padding: 12px 24px;
                         border: none;
                         border-radius: 25px;
                         cursor: pointer;
                         font-size: 16px;
-                        display: block;
-                        margin: 20px auto 0;
+                        margin: 0 10px;
                         transition: background 0.3s;
                     }
-                    .cerrar-btn:hover {
+                    .btn:hover {
                         background: #a0522d;
+                    }
+                    .btn-danger {
+                        background: #dc3545;
+                    }
+                    .btn-danger:hover {
+                        background: #c82333;
+                    }
+                    .checkbox {
+                        margin-right: 10px;
                     }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <h1>📋 Registros de Invitados - Boda Eladio & Edith</h1>
-                    <div class="info-box">
-                        ✅ Acceso autorizado - Contraseña correcta
-                    </div>
                     <div class="registros-container">
-                        <pre>${registros}</pre>
+                        <table id="registrosTable">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Asistencia</th>
+                                    <th>Personas</th>
+                                    <th>Mensaje</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registrosBody">
+                            </tbody>
+                        </table>
                     </div>
-                    <button class="cerrar-btn" onclick="window.close()">Cerrar</button>
+                    <div class="action-buttons">
+                        <button class="btn btn-danger" onclick="borrarSeleccionados()">Borrar Seleccionados</button>
+                        <button class="btn btn-danger" onclick="borrarTodos()">Borrar Todos</button>
+                        <button class="btn" onclick="window.close()">Cerrar</button>
+                    </div>
                 </div>
+
+                <script>
+                    const registros = ${JSON.stringify(registros)};
+                    
+                    function cargarRegistros() {
+                        const tbody = document.getElementById('registrosBody');
+                        tbody.innerHTML = '';
+                        
+                        registros.forEach((registro, index) => {
+                            const row = tbody.insertRow();
+                            row.innerHTML = \`
+                                <td><input type="checkbox" class="registro-checkbox" data-index="\${index}"></td>
+                                <td>\${registro.fecha}</td>
+                                <td>\${registro.hora}</td>
+                                <td>\${registro.nombre}</td>
+                                <td>\${registro.telefono}</td>
+                                <td>\${registro.asistencia}</td>
+                                <td>\${registro.personas}</td>
+                                <td>\${registro.mensaje || 'Sin mensaje'}</td>
+                            \`;
+                        });
+                    }
+
+                    function toggleSelectAll() {
+                        const checkboxes = document.querySelectorAll('.registro-checkbox');
+                        const selectAll = document.getElementById('selectAll');
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = selectAll.checked;
+                        });
+                    }
+
+                    function borrarSeleccionados() {
+                        const checkboxes = document.querySelectorAll('.registro-checkbox:checked');
+                        if (checkboxes.length === 0) {
+                            alert('Por favor, selecciona al menos un registro para borrar.');
+                            return;
+                        }
+
+                        if (confirm('¿Estás seguro de borrar los registros seleccionados?')) {
+                            const indices = Array.from(checkboxes).map(cb => parseInt(cb.dataset.index));
+                            const nuevosRegistros = registros.filter((_, index) => !indices.includes(index));
+                            
+                            localStorage.setItem('registros_boda', JSON.stringify(nuevosRegistros));
+                            alert('Registros borrados exitosamente.');
+                            window.location.reload();
+                        }
+                    }
+
+                    function borrarTodos() {
+                        if (confirm('¿Estás seguro de borrar TODOS los registros? Esta acción no se puede deshacer.')) {
+                            localStorage.setItem('registros_boda', JSON.stringify([]));
+                            alert('Todos los registros han sido borrados.');
+                            window.location.reload();
+                        }
+                    }
+
+                    // Cargar registros al abrir la ventana
+                    cargarRegistros();
+                </script>
             </body>
             </html>
         `);
-        
-        console.log('=== REGISTROS DE INVITADOS - ACCESO AUTORIZADO ===');
-        console.log(registros);
     }
 
     // Contador regresivo para la fecha de la boda
