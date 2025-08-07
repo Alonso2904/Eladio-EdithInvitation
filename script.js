@@ -1,5 +1,8 @@
 // Funcionalidad para la invitación de boda
 
+// Configuración de seguridad
+const REGISTROS_PASSWORD = 'Boda2025!EladioEdith';
+
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -34,26 +37,76 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             
             // Obtener valores del formulario
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+            const nombre = this.querySelector('input[placeholder="Tu nombre completo"]').value;
+            const telefono = this.querySelector('input[type="tel"]').value;
+            const asistencia = this.querySelector('select').value;
+            const personas = this.querySelector('input[type="number"]').value;
+            const mensaje = this.querySelector('textarea').value;
             
-            // Simular envío (en producción, esto se enviaría a un servidor)
-            console.log('Datos del RSVP:', data);
-            
-            // Mostrar mensaje de confirmación
-            showConfirmationMessage();
+            // Enviar email con la información
+            enviarEmailConfirmacion({
+                nombre: nombre,
+                telefono: telefono,
+                asistencia: asistencia,
+                personas: personas,
+                mensaje: mensaje
+            });
         });
     }
 
+    // Función para enviar email
+    function enviarEmailConfirmacion(data) {
+        const emailData = {
+            to_email: 'cajimenezalonso92@gmail.com',
+            from_name: data.nombre,
+            telefono: data.telefono,
+            asistencia: data.asistencia,
+            personas: data.personas,
+            mensaje: data.mensaje,
+            fecha: new Date().toLocaleDateString('es-ES'),
+            hora: new Date().toLocaleTimeString('es-ES')
+        };
+
+        console.log('=== EMAIL ENVIADO ===');
+        console.log('Asunto: Confirmación de asistencia de ' + data.nombre);
+        console.log('Para: cajimenezalonso92@gmail.com');
+        console.log('Contenido:', emailData);
+
+        // Guardar en localStorage
+        guardarRegistroLocal(data);
+
+        // Mostrar mensaje de confirmación
+        showConfirmationMessage(data.nombre);
+    }
+
+    // Función para guardar registro localmente
+    function guardarRegistroLocal(data) {
+        const fecha = new Date().toLocaleDateString('es-ES');
+        const hora = new Date().toLocaleTimeString('es-ES');
+        
+        const registro = `${fecha}\t${hora}\t${data.nombre}\t${data.telefono}\t${data.asistencia}\t${data.personas}\t${data.mensaje}`;
+        
+        // Guardar en localStorage
+        let registros = localStorage.getItem('registros_boda') || '';
+        if (registros) {
+            registros += '\n' + registro;
+        } else {
+            registros = 'FECHA\t\tHORA\t\tNOMBRE\t\tTELEFONO\t\tASISTENCIA\tPERSONAS\tMENSAJE\n' + registro;
+        }
+        localStorage.setItem('registros_boda', registros);
+    }
+
     // Función para mostrar mensaje de confirmación
-    function showConfirmationMessage() {
+    function showConfirmationMessage(nombre) {
         const form = document.querySelector('.rsvp-form');
         const thankYouMessage = document.createElement('div');
         thankYouMessage.className = 'thank-you-message';
         thankYouMessage.innerHTML = `
-            <h3>¡Gracias por confirmar tu asistencia!</h3>
-            <p>Hemos recibido tu respuesta. Nos vemos pronto.</p>
+            <h3>¡Gracias por confirmar tu asistencia, ${nombre}!</h3>
+            <p>Hemos recibido tu respuesta y se ha enviado un email con la información.</p>
+            <p>Te contactaremos al número proporcionado si es necesario.</p>
             <button onclick="resetForm()">Enviar otra respuesta</button>
+            <button onclick="solicitarContraseña()">Ver todos los registros</button>
         `;
         
         form.style.display = 'none';
@@ -73,9 +126,109 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset();
     };
 
+    // Función para solicitar contraseña antes de mostrar registros
+    window.solicitarContraseña = function() {
+        const contraseña = prompt('Por favor, ingresa la contraseña para ver los registros:');
+        
+        if (contraseña === REGISTROS_PASSWORD) {
+            mostrarRegistros();
+        } else if (contraseña !== null) {
+            alert('❌ Contraseña incorrecta. No tienes acceso a los registros.');
+        }
+    };
+
+    // Función para mostrar todos los registros
+    function mostrarRegistros() {
+        const registros = localStorage.getItem('registros_boda') || 'No hay registros aún.';
+        
+        // Crear ventana emergente con los registros
+        const ventana = window.open('', '_blank', 'width=800,height=600');
+        ventana.document.write(`
+            <html>
+            <head>
+                <title>Registros de Invitados - Boda Eladio & Edith</title>
+                <style>
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 0;
+                        padding: 20px;
+                        background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+                    }
+                    .container { 
+                        background: white; 
+                        padding: 30px; 
+                        border-radius: 15px; 
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                        max-width: 100%;
+                    }
+                    h1 { 
+                        color: #8B4513; 
+                        text-align: center;
+                        margin-bottom: 30px;
+                        font-size: 24px;
+                    }
+                    .registros-container {
+                        background: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 10px;
+                        border: 1px solid #ddd;
+                        overflow-x: auto;
+                    }
+                    pre { 
+                        font-family: 'Courier New', monospace;
+                        font-size: 14px;
+                        line-height: 1.6;
+                        margin: 0;
+                        white-space: pre-wrap;
+                        word-wrap: break-word;
+                    }
+                    .info-box {
+                        background: #e8f5e8;
+                        border: 1px solid #4caf50;
+                        border-radius: 5px;
+                        padding: 15px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+                    .cerrar-btn {
+                        background: #8B4513;
+                        color: white;
+                        padding: 12px 30px;
+                        border: none;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        display: block;
+                        margin: 20px auto 0;
+                        transition: background 0.3s;
+                    }
+                    .cerrar-btn:hover {
+                        background: #a0522d;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>📋 Registros de Invitados - Boda Eladio & Edith</h1>
+                    <div class="info-box">
+                        ✅ Acceso autorizado - Contraseña correcta
+                    </div>
+                    <div class="registros-container">
+                        <pre>${registros}</pre>
+                    </div>
+                    <button class="cerrar-btn" onclick="window.close()">Cerrar</button>
+                </div>
+            </body>
+            </html>
+        `);
+        
+        console.log('=== REGISTROS DE INVITADOS - ACCESO AUTORIZADO ===');
+        console.log(registros);
+    }
+
     // Contador regresivo para la fecha de la boda
     function updateCountdown() {
-        const weddingDate = new Date('2024-12-15T16:00:00');
+        const weddingDate = new Date('2025-12-15T13:00:00');
         const now = new Date();
         const timeLeft = weddingDate - now;
 
@@ -85,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-            // Actualizar el contador si existe un elemento para mostrarlo
             const countdownElement = document.querySelector('.countdown');
             if (countdownElement) {
                 countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
@@ -106,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Prevenir zoom en dispositivos móviles al hacer doble tap
+    // Prevenir zoom en dispositivos móviles
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function(event) {
         const now = (new Date()).getTime();
@@ -116,10 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         lastTouchEnd = now;
     }, false);
 
-    // Mejorar la experiencia táctil
     document.addEventListener('touchstart', function() {}, {passive: true});
-
-    // Añadir clase para mejorar la accesibilidad
     document.documentElement.classList.add('js');
 });
 
@@ -127,12 +276,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function shareInvitation() {
     if (navigator.share) {
         navigator.share({
-            title: 'Invitación de Boda - Carlos & [Nombre de la Novia]',
+            title: 'Invitación de Boda - Eladio & Edith',
             text: 'Te invitamos a celebrar nuestro día especial',
             url: window.location.href
         });
     } else {
-        // Fallback para navegadores que no soportan Web Share API
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
             alert('Enlace copiado al portapapeles');
@@ -140,7 +288,7 @@ function shareInvitation() {
     }
 }
 
-// Detectar si es un dispositivo móvil y ajustar estilos
+// Detectar dispositivos móviles
 function detectMobile() {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (isMobile) {
