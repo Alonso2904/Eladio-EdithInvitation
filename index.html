@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invitación de Boda - Eladio Palacios de la Rosa & Edith Lorena Alonso Mejia</title>
+    <title>Invitación de Boda - Eladio Palacios De la rosa & Edith Lorena Alonso Mejia</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="invitation-container">
         <!-- Portada -->
         <section class="hero-section">
             <div class="hero-content">
-                <h1 class="couple-names">Eladio Palacios de la Rosa & Edith Lorena Alonso Mejia</h1>
+                <h1 class="couple-names">Eladio Palacios De la rosa & Edith Lorena Alonso Mejia</h1>
                 <p class="invitation-text">Te invitan a compartir el día más feliz de sus vidas</p>
                 <div class="date-badge">
-                    <span class="day">15</span>
+                    <span class="day">20</span>
                     <span class="month">Diciembre</span>
                     <span class="year">2025</span>
                 </div>
@@ -29,16 +30,27 @@
                 <h2 class="section-title">Ceremonia</h2>
                 <div class="detail-item">
                     <h3>Fecha</h3>
-                    <p>15 de Diciembre de 2025</p>
+                    <p>20 de Diciembre de 2025</p>
                 </div>
                 <div class="detail-item">
                     <h3>Hora</h3>
-                    <p>4:00 PM</p>
+                    <p>1:00 PM</p>
                 </div>
                 <div class="detail-item">
                     <h3>Lugar</h3>
                     <p>Iglesia San Francisco de Asís<br>Calle Principal 123, Ciudad</p>
-                    <a></a>
+                </div>
+                
+                <!-- Enlace de Google Maps -->
+                <div class="map-section">
+                    <h3>¿Cómo llegar?</h3>
+                    <a href="https://www.google.com.mx/maps/place/Violetas,+Lomas+Lindas,+62855+Metepec,+Mor./@18.8802944,-98.7462697,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce4406b0a7fe01:0xa3653c38d4531ac0!8m2!3d18.8802944!4d-98.7436894!16s%2Fg%2F11vz6bfn52?hl=es&entry=ttu&g_ep=EgoyMDI1MDgwNC4wIKXMDSoASAFQAw%3D%3D" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="map-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Ver en Google Maps
+                    </a>
                 </div>
             </div>
         </section>
@@ -49,39 +61,58 @@
                 <h2 class="section-title">Recepción</h2>
                 <div class="detail-item">
                     <h3>Hora</h3>
-                    <p>6:00 PM</p>
+                    <p>1:00 PM</p>
                 </div>
                 <div class="detail-item">
                     <h3>Lugar</h3>
                     <p>Salón de Eventos Bella Vista<br>Avenida Central 456, Ciudad</p>
                 </div>
+                
+                <!-- Enlace de Google Maps para la recepción -->
+                <div class="map-section">
+                    <h3>¿Cómo llegar a la recepción?</h3>
+                    <a href="https://www.google.com.mx/maps/place/Violetas,+Lomas+Lindas,+62855+Metepec,+Mor./@18.8802944,-98.7462697,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce4406b0a7fe01:0xa3653c38d4531ac0!8m2!3d18.8802944!4d-98.7436894!16s%2Fg%2F11vz6bfn52?hl=es&entry=ttu&g_ep=EgoyMDI1MDgwNC4wIKXMDSoASAFQAw%3D%3D" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="map-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Ver en Google Maps
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- RSVP -->
-        <section class="rsvp-section">
-            <div class="rsvp-container">
-                <h2 class="section-title">Confirmar Asistencia</h2>
-                <p>Por favor confirma tu asistencia antes del 30 de noviembre</p>
-                <form class="rsvp-form">
-                    <input type="text" placeholder="Tu nombre completo" required>
-                    <select required>
-                        <option value="">¿Podrás asistir?</option>
-                        <option value="yes">Sí, asistiré</option>
-                        <option value="no">No podré asistir</option>
-                    </select>
-                    <input type="number" placeholder="Número de personas" min="1" max="2">
-                    <textarea placeholder="Mensaje o dedicatoria (opcional)" rows="3"></textarea>
-                    <button type="submit">Confirmar Asistencia</button>
-                </form>
-            </div>
-        </section>
+                <section class="rsvp-section">
+                    <div class="rsvp-container">
+                        <h2 class="section-title">Confirmar Asistencia</h2>
+                        <p>Por favor confirma tu asistencia antes del 30 de noviembre</p>
+                        <form class="rsvp-form">
+                            <input type="text" placeholder="Tu nombre completo" required>
+                            <select required>
+                                <option value="">¿Podrás asistir?</option>
+                                <option value="yes">Sí, asistiré</option>
+                                <option value="no">No podré asistir</option>
+                            </select>
+                            <input type="number" placeholder="Número de personas" min="1" max="2">
+                            <textarea placeholder="Mensaje o dedicatoria (opcional)" rows="3"></textarea>
+                            <button type="submit">Confirmar Asistencia</button>
+                        </form>
+                    </div>
+                </section>
 
         <!-- Footer -->
         <footer class="footer-section">
             <p>Con amor y alegría, esperamos compartir este día especial contigo</p>
-            <div class="social-links">
-                <a href="#" class="social-link">#CarlosYNovia2024</a>
+                <div class="social-links">
+                    <a href="https://www.google.com.mx/maps/place/Violetas,+Lomas+Lindas,+62855+Metepec,+Mor./@18.8802944,-98.7462697,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce4406b0a7fe01:0xa3653c38d4531ac0!8m2!3d18.8802944!4d-98.7436894!16s%2Fg%2F11vz6bfn52?hl=es&entry=ttu&g_ep=EgoyMDI1MDgwNC4wIKXMDSoASAFQAw%3D%3D" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="social-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Ver en Google Maps
+                    </a>
+                </div>
             </div>
         </footer>
     </div>
