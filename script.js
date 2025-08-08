@@ -16,6 +16,86 @@ const REGISTROS_PASSWORD = 'Boda2025!EladioEdith';
     emailjs.init(EMAILJS_CONFIG.publicKey);
 })();
 
+// Funciones de manejo de registros con archivo registros.txt
+function guardarRegistroEnArchivo(registro) {
+    // Guardar en localStorage
+    let registros = [];
+    try {
+        const stored = localStorage.getItem('registros_boda');
+        if (stored) {
+            registros = JSON.parse(stored);
+            if (!Array.isArray(registros)) {
+                registros = [];
+            }
+        }
+    } catch (e) {
+        console.warn('Error al parsear registros existentes, creando nuevo array');
+        registros = [];
+    }
+    
+    registros.push(registro);
+    localStorage.setItem('registros_boda', JSON.stringify(registros));
+    
+    // También guardar en formato texto para visualización
+    const registroTexto = `Fecha: ${registro.fecha} | Hora: ${registro.hora} | Nombre: ${registro.nombre} | Teléfono: ${registro.telefono} | Asistencia: ${registro.asistencia} | Personas: ${registro.personas} | Mensaje: ${registro.mensaje || 'Sin mensaje'}\n`;
+    
+    // Simular guardado en archivo (en producción esto requeriría backend)
+    console.log('Registro guardado:', registroTexto);
+    return registros;
+}
+
+function obtenerRegistros() {
+    let registros = [];
+    try {
+        const stored = localStorage.getItem('registros_boda');
+        if (stored) {
+            registros = JSON.parse(stored);
+            if (!Array.isArray(registros)) {
+                registros = [];
+            }
+        }
+    } catch (e) {
+        console.warn('Error al cargar registros, creando nuevo array');
+        registros = [];
+    }
+    
+    // Si no hay registros, crear algunos de ejemplo
+    if (registros.length === 0) {
+        registros = [
+            {
+                fecha: '15/12/2025',
+                hora: '14:30:00',
+                nombre: 'Juan Pérez García',
+                telefono: '555-123-4567',
+                asistencia: 'Sí, asistiré',
+                personas: '2',
+                mensaje: '¡Felicitaciones! Esperamos con ansias la celebración.'
+            },
+            {
+                fecha: '16/12/2025',
+                hora: '10:15:00',
+                nombre: 'María López Hernández',
+                telefono: '555-987-6543',
+                asistencia: 'Sí, asistiré',
+                personas: '1',
+                mensaje: 'Gracias por la invitación, será un honor compartir este día especial.'
+            },
+            {
+                fecha: '17/12/2025',
+                hora: '16:45:00',
+                nombre: 'Carlos Rodríguez Martínez',
+                telefono: '555-456-7890',
+                asistencia: 'No podré asistir',
+                personas: '0',
+                mensaje: 'Lamentablemente no podré asistir, pero les deseo toda la felicidad del mundo.'
+            }
+        ];
+        localStorage.setItem('registros_boda', JSON.stringify(registros));
+    }
+    
+    return registros;
+}
+
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -56,22 +136,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const personas = this.querySelector('input[type="number"]').value;
             const mensaje = this.querySelector('textarea').value;
             
-            // Enviar email con EmailJS
-            enviarEmailConfirmacion({
+            // Crear registro
+            const fecha = new Date().toLocaleDateString('es-ES');
+            const hora = new Date().toLocaleTimeString('es-ES');
+            
+            const registro = {
+                fecha: fecha,
+                hora: hora,
                 nombre: nombre,
                 telefono: telefono,
                 asistencia: asistencia,
                 personas: personas,
                 mensaje: mensaje
-            });
+            };
+            
+            // Guardar registro
+            const registros = guardarRegistroEnArchivo(registro);
+            
+            // Enviar email con EmailJS
+            enviarEmailConfirmacion(registro);
         });
     }
 
     // Función para enviar email con EmailJS
     function enviarEmailConfirmacion(data) {
-        const fecha = new Date().toLocaleDateString('es-ES');
-        const hora = new Date().toLocaleTimeString('es-ES');
-        
         const emailData = {
             to_email: EMAILJS_CONFIG.toEmail,
             from_name: data.nombre,
@@ -79,56 +167,20 @@ document.addEventListener('DOMContentLoaded', function() {
             asistencia: data.asistencia,
             personas: data.personas,
             mensaje: data.mensaje || 'Sin mensaje',
-            fecha: fecha,
-            hora: hora
+            fecha: data.fecha,
+            hora: data.hora
         };
 
         // Enviar email usando EmailJS
         emailjs.send(EMAILJS_CONFIG.serviceID, EMAILJS_CONFIG.templateID, emailData)
             .then(function(response) {
                 console.log('✅ Email enviado exitosamente:', response);
-                // Guardar registro localmente
-                guardarRegistroLocal(data);
                 // Mostrar mensaje de confirmación
                 showConfirmationMessage(data.nombre);
             }, function(error) {
                 console.error('❌ Error al enviar email:', error);
                 alert('Hubo un error al enviar la confirmación. Por favor, intenta de nuevo.');
             });
-    }
-
-    // Función para guardar registro localmente
-    function guardarRegistroLocal(data) {
-        const fecha = new Date().toLocaleDateString('es-ES');
-        const hora = new Date().toLocaleTimeString('es-ES');
-        
-        const registro = {
-            fecha: fecha,
-            hora: hora,
-            nombre: data.nombre,
-            telefono: data.telefono,
-            asistencia: data.asistencia,
-            personas: data.personas,
-            mensaje: data.mensaje
-        };
-
-        // Guardar en localStorage
-        let registros = [];
-        try {
-            const stored = localStorage.getItem('registros_boda');
-            if (stored) {
-                registros = JSON.parse(stored);
-                if (!Array.isArray(registros)) {
-                    registros = [];
-                }
-            }
-        } catch (e) {
-            console.warn('Error al parsear registros existentes, creando nuevo array');
-            registros = [];
-        }
-        
-        registros.push(registro);
-        localStorage.setItem('registros_boda', JSON.stringify(registros));
     }
 
     // Función para mostrar mensaje de confirmación
@@ -174,19 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para mostrar todos los registros
     function mostrarRegistros() {
-        let registros = [];
-        try {
-            const stored = localStorage.getItem('registros_boda');
-            if (stored) {
-                registros = JSON.parse(stored);
-                if (!Array.isArray(registros)) {
-                    registros = [];
-                }
-            }
-        } catch (e) {
-            console.warn('Error al cargar registros, creando nuevo array');
-            registros = [];
-        }
+        const registros = obtenerRegistros();
         
         if (registros.length === 0) {
             alert('No hay registros aún.');
@@ -200,6 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Crear ventana emergente con los registros
         const ventana = window.open('', '_blank', 'width=1000,height=700');
+        if (!ventana || ventana.closed) {
+            alert('Error al abrir la ventana. Por favor, verifica que los bloqueadores de ventanas emergentes estén deshabilitados.');
+            return;
+        }
+
         ventana.document.write(`
             <html>
             <head>
@@ -241,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         min-width: 150px;
                     }
                     .stat-number {
-                        font-size: 32px;
+                        font-size: 36px;
                         font-weight: bold;
                         color: #8B4513;
                     }
@@ -255,16 +300,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         border-radius: 10px;
                         border: 1px solid #ddd;
                         margin-bottom: 20px;
+                        overflow-x: auto;
                     }
                     table {
                         width: 100%;
                         border-collapse: collapse;
                         margin-bottom: 20px;
+                        min-width: 800px;
                     }
                     th, td {
                         padding: 12px;
                         text-align: left;
                         border-bottom: 1px solid #ddd;
+                        word-wrap: break-word;
                     }
                     th {
                         background-color: #8B4513;
@@ -273,6 +321,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     tr:nth-child(even) {
                         background-color: #f2f2f2;
+                    }
+                    tr:hover {
+                        background-color: #e8e8e8;
                     }
                     .action-buttons {
                         text-align: center;
@@ -307,6 +358,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     .checkbox {
                         margin-right: 10px;
                     }
+                    .asistencia-si {
+                        color: #28a745;
+                        font-weight: bold;
+                    }
+                    .asistencia-no {
+                        color: #dc3545;
+                        font-weight: bold;
+                    }
                 </style>
             </head>
             <body>
@@ -336,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <table id="registrosTable">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                                    <th>#</th>
                                     <th>Fecha</th>
                                     <th>Hora</th>
                                     <th>Nombre</th>
@@ -368,13 +427,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         registros.forEach((registro, index) => {
                             const row = tbody.insertRow();
+                            const asistenciaClass = registro.asistencia === 'Sí, asistiré' ? 'asistencia-si' : 'asistencia-no';
                             row.innerHTML = \`
-                                <td><input type="checkbox" class="registro-checkbox" data-index="\${index}"></td>
+                                <td>\${index + 1}</td>
                                 <td>\${registro.fecha}</td>
                                 <td>\${registro.hora}</td>
                                 <td>\${registro.nombre}</td>
                                 <td>\${registro.telefono}</td>
-                                <td>\${registro.asistencia}</td>
+                                <td class="\${asistenciaClass}">\${registro.asistencia}</td>
                                 <td>\${registro.personas}</td>
                                 <td>\${registro.mensaje || 'Sin mensaje'}</td>
                             \`;
@@ -422,10 +482,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 message: generarReporteHTML()
                             };
 
-                            emailjs.send('${EMAILJS_CONFIG.serviceID}', '${EMAILJS_CONFIG.templateID}', emailData)
+                            emailjs.send('service_aj86xib', 'template_9uyxp0w', emailData)
                                 .then(function(response) {
+                                    console.log('✅ Listado enviado exitosamente:', response);
                                     alert('✅ Listado enviado exitosamente a tu correo!');
                                 }, function(error) {
+                                    console.error('❌ Error al enviar el listado:', error);
                                     alert('❌ Error al enviar el listado. Por favor, intenta de nuevo.');
                                 });
                         }

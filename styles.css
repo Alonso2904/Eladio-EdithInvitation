@@ -266,3 +266,19 @@ body {
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,100 L0,100 Z" fill="white" opacity="0.8"/></svg>');
     background-size: cover;
 }
+
+.button1 {
+    position: absolute;
+    top:50%;
+    background-color:#046b1e;
+    color: #fff;
+    border:none; 
+    border-radius:10px; 
+    padding:15px;
+    min-height:30px; 
+    min-width: 120px;
+  }
+  .button1:hover {
+      background-color:#002ead;
+      transition: 0.7s;
+  }
