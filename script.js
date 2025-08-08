@@ -1,4 +1,5 @@
 // Funcionalidad para la invitación de boda con EmailJS configurado
+
 // Configuración de EmailJS con tus credenciales
 const EMAILJS_CONFIG = {
     serviceID: 'service_aj86xib',
@@ -192,8 +193,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Calcular estadísticas
+        const asistentes = registros.filter(r => r.asistencia === 'Sí, asistiré');
+        const noAsistentes = registros.filter(r => r.asistencia === 'No podré asistir');
+        const totalPersonas = asistentes.reduce((sum, r) => sum + (parseInt(r.personas) || 0), 0);
+
         // Crear ventana emergente con los registros
-        const ventana = window.open('', '_blank', 'width=900,height=700');
+        const ventana = window.open('', '_blank', 'width=1000,height=700');
         ventana.document.write(`
             <html>
             <head>
@@ -217,6 +223,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         text-align: center;
                         margin-bottom: 30px;
                         font-size: 24px;
+                    }
+                    .stats-container {
+                        display: flex;
+                        justify-content: space-around;
+                        margin-bottom: 30px;
+                        flex-wrap: wrap;
+                    }
+                    .stat-card {
+                        background: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 10px;
+                        text-align: center;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        margin: 10px;
+                        flex: 1;
+                        min-width: 150px;
+                    }
+                    .stat-number {
+                        font-size: 32px;
+                        font-weight: bold;
+                        color: #8B4513;
+                    }
+                    .stat-label {
+                        color: #666;
+                        margin-top: 5px;
                     }
                     .registros-container {
                         background: #f9f9f9;
@@ -267,6 +298,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     .btn-danger:hover {
                         background: #c82333;
                     }
+                    .btn-success {
+                        background: #28a745;
+                    }
+                    .btn-success:hover {
+                        background: #218838;
+                    }
                     .checkbox {
                         margin-right: 10px;
                     }
@@ -275,6 +312,26 @@ document.addEventListener('DOMContentLoaded', function() {
             <body>
                 <div class="container">
                     <h1>📋 Registros de Invitados - Boda Eladio & Edith</h1>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-number">${registros.length}</div>
+                            <div class="stat-label">Total Invitados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${asistentes.length}</div>
+                            <div class="stat-label">Confirmaron Asistencia</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${noAsistentes.length}</div>
+                            <div class="stat-label">No Asistirán</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${totalPersonas}</div>
+                            <div class="stat-label">Total Personas</div>
+                        </div>
+                    </div>
+                    
                     <div class="registros-container">
                         <table id="registrosTable">
                             <thead>
@@ -293,7 +350,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             </tbody>
                         </table>
                     </div>
+                    
                     <div class="action-buttons">
+                        <button class="btn btn-success" onclick="enviarListadoCompleto()">📧 Enviar Listado por Email</button>
                         <button class="btn btn-danger" onclick="borrarSeleccionados()">Borrar Seleccionados</button>
                         <button class="btn btn-danger" onclick="borrarTodos()">Borrar Todos</button>
                         <button class="btn" onclick="window.close()">Cerrar</button>
@@ -353,6 +412,52 @@ document.addEventListener('DOMContentLoaded', function() {
                             alert('Todos los registros han sido borrados.');
                             window.location.reload();
                         }
+                    }
+
+                    function enviarListadoCompleto() {
+                        if (confirm('¿Deseas enviar el listado completo de invitados a tu correo?')) {
+                            const emailData = {
+                                to_email: 'cajimenezalonso92@gmail.com',
+                                subject: 'Listado Completo de Invitados - Boda Eladio & Edith',
+                                message: generarReporteHTML()
+                            };
+
+                            emailjs.send('${EMAILJS_CONFIG.serviceID}', '${EMAILJS_CONFIG.templateID}', emailData)
+                                .then(function(response) {
+                                    alert('✅ Listado enviado exitosamente a tu correo!');
+                                }, function(error) {
+                                    alert('❌ Error al enviar el listado. Por favor, intenta de nuevo.');
+                                });
+                        }
+                    }
+
+                    function generarReporteHTML() {
+                        const asistentes = registros.filter(r => r.asistencia === 'Sí, asistiré');
+                        const noAsistentes = registros.filter(r => r.asistencia === 'No podré asistir');
+                        const totalPersonas = asistentes.reduce((sum, r) => sum + (parseInt(r.personas) || 0), 0);
+
+                        let reporte = '<h2>Reporte de Invitados - Boda Eladio & Edith</h2>';
+                        reporte += '<h3>Resumen:</h3>';
+                        reporte += '<p><strong>Total Invitados:</strong> ${registros.length}</p>';
+                        reporte += '<p><strong>Confirmaron Asistencia:</strong> ${asistentes.length}</p>';
+                        reporte += '<p><strong>No Asistirán:</strong> ${noAsistentes.length}</p>';
+                        reporte += '<p><strong>Total Personas:</strong> ${totalPersonas}</p>';
+                        reporte += '<h3>Detalle de Invitados:</h3>';
+                        reporte += '<table border="1" style="border-collapse: collapse; width: 100%;">';
+                        reporte += '<tr><th>Nombre</th><th>Teléfono</th><th>Asistencia</th><th>Personas</th><th>Mensaje</th></tr>';
+                        
+                        registros.forEach(registro => {
+                            reporte += '<tr>';
+                            reporte += '<td>' + registro.nombre + '</td>';
+                            reporte += '<td>' + registro.telefono + '</td>';
+                            reporte += '<td>' + registro.asistencia + '</td>';
+                            reporte += '<td>' + (registro.personas || '0') + '</td>';
+                            reporte += '<td>' + (registro.mensaje || 'Sin mensaje') + '</td>';
+                            reporte += '</tr>';
+                        });
+                        
+                        reporte += '</table>';
+                        return reporte;
                     }
 
                     // Cargar registros al abrir la ventana
@@ -434,4 +539,3 @@ function detectMobile() {
 }
 
 detectMobile();
-
