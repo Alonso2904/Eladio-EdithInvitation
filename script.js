@@ -1,5 +1,4 @@
 // Funcionalidad para la invitación de boda con EmailJS configurado
-
 // Configuración de EmailJS con tus credenciales
 const EMAILJS_CONFIG = {
     serviceID: 'service_aj86xib',
@@ -435,3 +434,4 @@ function detectMobile() {
 }
 
 detectMobile();
+

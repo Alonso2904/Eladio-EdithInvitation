@@ -7,6 +7,80 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos para el carrete de fotos */
+        .photo-carousel {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+        }
+        
+        .carousel-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .carousel-slide.active {
+            display: block;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .carousel-controls {
+            margin-top: 20px;
+        }
+        
+        .carousel-btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        .carousel-btn:hover {
+            background: #a0522d;
+        }
+        
+        .carousel-indicators {
+            margin-top: 15px;
+        }
+        
+        .indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #ddd;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .indicator.active {
+            background: #8B4513;
+        }
+    </style>
 </head>
 <body>
     <div class="invitation-container">
@@ -24,6 +98,59 @@
             <div class="floral-decoration"></div>
         </section>
 
+        <!-- Carrete de Fotos -->
+        <section class="photo-carousel">
+            <h2 style="color: #8B4513; margin-bottom: 20px;">Nuestros Momentos Más Importantes</h2>
+            <p style="color: #666; margin-bottom: 30px; font-size: 18px;">Queremos compartir con ustedes nuestros momentos más especiales</p>
+            
+            <div class="carousel-container">
+                <img src="Imagenes/20180317_204146.jpg" alt="Momento 1" class="carousel-slide active">
+                <img src="Imagenes/IMG_1392.HEIC" alt="Momento 2" class="carousel-slide">
+                <img src="Imagenes/IMG_1403.HEIC" alt="Momento 3" class="carousel-slide">
+                <img src="Imagenes/IMG_20190119_185719.jpg" alt="Momento 4" class="carousel-slide">
+                <img src="Imagenes/IMG_20210508_195037.jpg" alt="Momento 5" class="carousel-slide">
+                <img src="Imagenes/IMG_20210509_140839.jpg" alt="Momento 6" class="carousel-slide">
+                <img src="Imagenes/IMG_20210516_205031.jpg" alt="Momento 7" class="carousel-slide">
+                <img src="Imagenes/IMG_20250807_110243056_HDR~2.jpg" alt="Momento 8" class="carousel-slide">
+                <img src="Imagenes/PXL_20221227_065229647.jpg" alt="Momento 9" class="carousel-slide">
+                <img src="Imagenes/PXL_20221227_071849438.MP.jpg" alt="Momento 10" class="carousel-slide">
+                <img src="Imagenes/PXL_20221227_072422985.MP.jpg" alt="Momento 11" class="carousel-slide">
+                <img src="Imagenes/PXL_20221227_133916811.MP.jpg" alt="Momento 12" class="carousel-slide">
+                <img src="Imagenes/PXL_20221227_162407305.MP.jpg" alt="Momento 13" class="carousel-slide">
+                <img src="Imagenes/PXL_20230114_114329258.jpg" alt="Momento 14" class="carousel-slide">
+                <img src="Imagenes/PXL_20230114_170003224.MP.jpg" alt="Momento 15" class="carousel-slide">
+                <img src="Imagenes/PXL_20230118_213730668.PORTRAIT.jpg" alt="Momento 16" class="carousel-slide">
+                <img src="Imagenes/PXL_20230118_213942639.PORTRAIT.jpg" alt="Momento 17" class="carousel-slide">
+                <img src="Imagenes/PXL_20230204_183600276.MP.jpg" alt="Momento 18" class="carousel-slide">
+            </div>
+            
+            <div class="carousel-controls">
+                <button class="carousel-btn" onclick="previousSlide()">Anterior</button>
+                <button class="carousel-btn" onclick="nextSlide()">Siguiente</button>
+            </div>
+            
+            <div class="carousel-indicators">
+                <span class="indicator active" onclick="currentSlide(1)"></span>
+                <span class="indicator" onclick="currentSlide(2)"></span>
+                <span class="indicator" onclick="currentSlide(3)"></span>
+                <span class="indicator" onclick="currentSlide(4)"></span>
+                <span class="indicator" onclick="currentSlide(5)"></span>
+                <span class="indicator" onclick="currentSlide(6)"></span>
+                <span class="indicator" onclick="currentSlide(7)"></span>
+                <span class="indicator" onclick="currentSlide(8)"></span>
+                <span class="indicator" onclick="currentSlide(9)"></span>
+                <span class="indicator" onclick="currentSlide(10)"></span>
+                <span class="indicator" onclick="currentSlide(11)"></span>
+                <span class="indicator" onclick="currentSlide(12)"></span>
+                <span class="indicator" onclick="currentSlide(13)"></span>
+                <span class="indicator" onclick="currentSlide(14)"></span>
+                <span class="indicator" onclick="currentSlide(15)"></span>
+                <span class="indicator" onclick="currentSlide(16)"></span>
+                <span class="indicator" onclick="currentSlide(17)"></span>
+                <span class="indicator" onclick="currentSlide(18)"></span>
+            </div>
+        </section>
+
         <!-- Recepción -->
         <section class="reception-section">
             <div class="reception-container">
@@ -36,67 +163,8 @@
                     <h3>“Nuestro corazón ya está unido para siempre…
                     <br/>Ahora queremos compartir nuestra alegría con quienes más queremos.
                     <br/>¡Celebra con nosotros!”</h3>
-                     
                 </div>
                 
-                <!-- Galería de Fotos -->
-                <section class="gallery-section" style="text-align: center; margin: 60px 0; padding: 40px 0;">
-                    <h2 style="color: #8B4513; margin-bottom: 20px; font-size: 28px;">Nuestros Momentos</h2>
-                    <p style="font-size: 18px; color: #666; margin-bottom: 30px;">Queremos compartir con ustedes nuestros momentos más importantes</p>
-                    
-                    <div class="photo-carousel" style="max-width: 800px; margin: 0 auto; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
-                        <div class="carousel-container" style="display: flex; transition: transform 0.5s ease;">
-                            <!-- Imagen 1 -->
-                            <div class="carousel-slide" style="min-width: 100%;">
-                                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczOgmj1PE3xBAcUXvgjLENBdNR2MfkK9Vj3UQHRZg05uL66rDGpAdlGJRQ=w945-h1260-s-no-gm?authuser=0" 
-                                     alt="Nuestra historia 1" 
-                                     style="width: 100%; height: 500px; object-fit: cover;">
-                            </div>
-                            <!-- Imagen 2 -->
-                            <div class="carousel-slide" style="min-width: 100%;">
-                                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczNG2dl6I4zYHHvRb9xmX8sW62VTZxuHdE2aXI-emlC1sC1oAj6zgcKkHA=w1556-h1167-s-no-gm?authuser=0" 
-                                     alt="Nuestra historia 2" 
-                                     style="width: 100%; height: 500px; object-fit: cover;">
-                            </div>
-                            <!-- Imagen 3 -->
-                            <div class="carousel-slide" style="min-width: 100%;">
-                                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczNTCz8cLoTa2h8sARNsI36QQCT42vUkAuA6h0tUdlsWJ07OUPh3C_bdrQ=w1556-h1167-s-no-gm?authuser=0" 
-                                     alt="Nuestra historia 3" 
-                                     style="width: 100%; height: 500px; object-fit: cover;">
-                            </div>
-                            <!-- Imagen 4 -->
-                            <div class="carousel-slide" style="min-width: 100%;">
-                                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczNR6J60gk2Gh7Z_pK2QsByLOy9Nnpn6VR6P5HOGMoi6CA2LypXl7OF9uA=w945-h1260-s-no-gm?authuser=0" 
-                                     alt="Nuestra historia 4" 
-                                     style="width: 100%; height: 500px; object-fit: cover;">
-                            </div>
-                            <!-- Imagen 5 -->
-                            <div class="carousel-slide" style="min-width: 100%;">
-                                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczMq8HpSHrkI2mJcrAvpRp0ohdkFijnybGZ4Vwne6x_TwTzwEIPdqvZj=w945-h1260-s-no-gm?authuser=0" 
-                                     alt="Nuestra historia 5" 
-                                     style="width: 100%; height: 500px; object-fit: cover;">
-                            </div>
-                        </div>
-                        
-                        <!-- Controles del carrusel -->
-                        <button class="carousel-btn prev" onclick="moveSlide(-1)" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%); background: rgba(139, 69, 19, 0.8); color: white; border: none; padding: 15px; border-radius: 50%; cursor: pointer; font-size: 20px; z-index: 10;">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-btn next" onclick="moveSlide(1)" style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); background: rgba(139, 69, 19, 0.8); color: white; border: none; padding: 15px; border-radius: 50%; cursor: pointer; font-size: 20px; z-index: 10;">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        
-                        <!-- Indicadores -->
-                        <div class="carousel-indicators" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10;">
-                            <span class="indicator active" onclick="goToSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; opacity: 0.7;"></span>
-                            <span class="indicator" onclick="goToSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; opacity: 0.7;"></span>
-                            <span class="indicator" onclick="goToSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; opacity: 0.7;"></span>
-                            <span class="indicator" onclick="goToSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; opacity: 0.7;"></span>
-                            <span class="indicator" onclick="goToSlide(4)" style="width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; opacity: 0.7;"></span>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- Mapa de Google Maps para la recepción -->
                 <div class="map-section" style="text-align: center; margin: 40px 0;">
                     <h3 style="color: #8B4513; margin-bottom: 20px;">¿Cómo llegar a la recepción?</h3>
@@ -124,10 +192,10 @@
         </section>
 
         <!-- RSVP -->
-                <section class="rsvp-section">
-                    <div class="rsvp-container">
-                        <h2 class="section-title">Confirmar Asistencia</h2>
-                        <p>Por favor confirma tu asistencia antes del 30 de noviembre</p>
+        <section class="rsvp-section">
+            <div class="rsvp-container">
+                <h2 class="section-title">Confirmar Asistencia</h2>
+                <p>Por favor confirma tu asistencia antes del 30 de noviembre</p>
                 <form class="rsvp-form">
                     <input type="text" placeholder="Tu nombre completo" required>
                     <input type="tel" placeholder="Número telefónico" required>
@@ -140,21 +208,20 @@
                     <textarea placeholder="Mensaje o dedicatoria (opcional)" rows="3"></textarea>
                     <button type="submit">Confirmar Asistencia</button>
                 </form>
-                    </div>
-                </section>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer class="footer-section">
             <p>Con amor y alegría, esperamos compartir este día especial contigo</p>
-                <div class="social-links">
-                    <a href="https://www.google.com.mx/maps/place/Violetas,+Lomas+Lindas,+62855+Metepec,+Mor./@18.8802944,-98.7462697,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce4406b0a7fe01:0xa3653c38d4531ac0!8m2!3d18.8802944!4d-98.7436894!16s%2Fg%2F11vz6bfn52?hl=es&entry=ttu&g_ep=EgoyMDI1MDgwNC4wIKXMDSoASAFQAw%3D%3D" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           class="social-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Ver en Google Maps
-                    </a>
-                </div>
+            <div class="social-links">
+                <a href="https://www.google.com.mx/maps/place/Violetas,+Lomas+Lindas,+62855+Metepec,+Mor./@18.8802944,-98.7462697,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce4406b0a7fe01:0xa3653c38d4531ac0!8m2!3d18.8802944!4d-98.7436894!16s%2Fg%2F11vz6bfn52?hl=es&entry=ttu&g_ep=EgoyMDI1MDgwNC4wIKXMDSoASAFQAw%3D%3D" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="social-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Ver en Google Maps
+                </a>
             </div>
         </footer>
     </div>
@@ -162,5 +229,65 @@
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="script.js"></script>
+    
+    <script>
+        // Funciones para el carrete de fotos
+        let slideIndex = 1;
+        let autoSlideInterval;
+
+        function showSlide(n) {
+            const slides = document.getElementsByClassName("carousel-slide");
+            const indicators = document.getElementsByClassName("indicator");
+            
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+            }
+            
+            for (let i = 0; i < indicators.length; i++) {
+                indicators[i].classList.remove("active");
+            }
+            
+            slides[slideIndex - 1].classList.add("active");
+            indicators[slideIndex - 1].classList.add("active");
+        }
+
+        function nextSlide() {
+            showSlide(slideIndex += 1);
+        }
+
+        function previousSlide() {
+            showSlide(slideIndex -= 1);
+        }
+
+        function currentSlide(n) {
+            showSlide(slideIndex = n);
+        }
+
+        // Iniciar carrete automático
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                nextSlide();
+            }, 4000); // Cambia cada 4 segundos
+        }
+
+        // Detener carrete automático
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Iniciar cuando la página carga
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(slideIndex);
+            startAutoSlide();
+            
+            // Pausar al pasar el mouse
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+            carouselContainer.addEventListener('mouseleave', startAutoSlide);
+        });
+    </script>
 </body>
 </html>
