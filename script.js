@@ -411,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn btn-success" onclick="enviarListadoCompleto()">📧 Enviar Listado por Email</button>
                         <button class="btn btn-danger" onclick="borrarSeleccionados()">Borrar Seleccionados</button>
                         <button class="btn btn-danger" onclick="borrarTodos()">Borrar Todos</button>
                         <button class="btn" onclick="window.close()">Cerrar</button>
@@ -421,25 +420,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 <script>
                     const registros = ${JSON.stringify(registros)};
                     
-                    function cargarRegistros() {
-                        const tbody = document.getElementById('registrosBody');
-                        tbody.innerHTML = '';
-                        
-                        registros.forEach((registro, index) => {
-                            const row = tbody.insertRow();
-                            const asistenciaClass = registro.asistencia === 'Sí, asistiré' ? 'asistencia-si' : 'asistencia-no';
-                            row.innerHTML = \`
-                                <td>\${index + 1}</td>
-                                <td>\${registro.fecha}</td>
-                                <td>\${registro.hora}</td>
-                                <td>\${registro.nombre}</td>
-                                <td>\${registro.telefono}</td>
-                                <td class="\${asistenciaClass}">\${registro.asistencia}</td>
-                                <td>\${registro.personas}</td>
-                                <td>\${registro.mensaje || 'Sin mensaje'}</td>
-                            \`;
-                        });
-                    }
+function cargarRegistros() {
+    const tbody = document.getElementById('registrosBody');
+    tbody.innerHTML = '';
+    
+    registros.forEach((registro, index) => {
+        const row = tbody.insertRow();
+        const asistenciaClass = registro.asistencia === 'Sí, asistiré' ? 'asistencia-si' : 'asistencia-no';
+        row.innerHTML = \`
+            <td><input type="checkbox" class="registro-checkbox" data-index="\${index}"></td>
+            <td>\${registro.fecha}</td>
+            <td>\${registro.hora}</td>
+            <td>\${registro.nombre}</td>
+            <td>\${registro.telefono}</td>
+            <td class="\${asistenciaClass}">\${registro.asistencia}</td>
+            <td>\${registro.personas}</td>
+            <td>\${registro.mensaje || 'Sin mensaje'}</td>
+        \`;
+    });
+}
 
                     function toggleSelectAll() {
                         const checkboxes = document.querySelectorAll('.registro-checkbox');
